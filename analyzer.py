@@ -8,20 +8,26 @@ args = parser.parse_args()
 
 client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
 
-with open(args.log_file, "r") as f:
-    log_content = f.read()
 
-message = client.messages.create(
-    model="claude-sonnet-4-6",
-    max_tokens=1024,
-    messages=[
-        {"role": "user", "content": f"Analyze these security logs and identify threats:\n\n{log_content}"}
-    ]
-)
+def analyze_logs(log_file):
+    with open(log_file, "r") as f:
+        log_content = f.read()
 
-print(message.content[0].text)
+    message = client.messages.create(
+        model="claude-sonnet-4-6",
+        max_tokens=1024,
+        messages=[
+            {"role": "user", "content": f"Analyze these security logs and identify threats:\n\n{log_content}"}
+        ]
+    )
 
+    return message.content[0].text
+
+
+
+result = analyze_logs(args.log_file)
+print(result)
 with open("report.md", "w") as f:
-    f.write(message.content[0].text)
-    
+    f.write(result)
+
 print("Analysis report saved to report.md")
