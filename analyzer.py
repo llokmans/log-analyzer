@@ -54,6 +54,7 @@ def save_database(threat_type, description):
 
 result = analyze_logs(args.log_file)
 send_alert(result)
+save_database("Threat Analysis", result)
 
 print(result)
 with open("report.md", "w") as f:
